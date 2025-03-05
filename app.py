@@ -27,6 +27,7 @@ df_selected['50_MA'] = df_selected['close'].rolling(window=50).mean()
 df_selected['200_MA'] = df_selected['close'].rolling(window=200).mean()
 df_selected['RSI'] = 100 - (100 / (1 + df_selected['close'].pct_change().rolling(14).mean()))
 df_selected['MACD'] = df_selected['close'].ewm(span=12, adjust=False).mean() - df_selected['close'].ewm(span=26, adjust=False).mean()
+df_selected['Signal_Line'] = df_selected['MACD'].ewm(span=9, adjust=False).mean()
 
 # Plot Charts
 st.title(f"Stock Analysis Dashboard for {selected_company}")
@@ -47,7 +48,7 @@ st.plotly_chart(fig)
 st.subheader("Technical Indicators")
 st.line_chart(df_selected[['50_MA', '200_MA']])
 st.line_chart(df_selected[['RSI']])
-st.line_chart(df_selected[['MACD']])
+st.line_chart(df_selected[['MACD','Signal_Line']])
 
 # Load & Display Predictions (Assume Models Are Pretrained & Saved)
 @st.cache
