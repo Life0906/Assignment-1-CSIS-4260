@@ -64,5 +64,8 @@ latest_features = np.array(latest_features).reshape(1, -1)
 
 xgb_pred = xgb_model.predict(latest_features)
 
+print(f"Expected Features: {xgb_model.n_features_in_}")
+print(f"Provided Features: {latest_features.shape[1]}")
+
 st.subheader("Stock Price Predictions")
 st.write(f"**XGBoost Prediction:** {xgb_pred[0]:.2f}")
