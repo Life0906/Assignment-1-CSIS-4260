@@ -9,7 +9,7 @@ benchmark_10x = pd.read_csv("benchmark_results_10x.csv")
 benchmark_100x = pd.read_csv("benchmark_results_100x.csv")
 
 # Load stock data
-stock_data = pd.read_parquet("scaled_dataset_1x_snappy.parquet")
+stock_data = pd.read_parquet("data.parquet")
 
 # Streamlit App
 st.set_page_config(page_title="Stock Dashboard", layout="wide")
