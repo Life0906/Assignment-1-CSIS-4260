@@ -17,10 +17,10 @@ st.title("Stock Market Dashboard")
 
 # Sidebar for Stock Selection
 st.sidebar.header("Stock Selection")
-selected_stock = st.sidebar.selectbox("Choose a stock:", stock_data['symbol'].unique())
+selected_stock = st.sidebar.selectbox("Choose a stock:", stock_data['name'].unique())
 
 # Filter Data for Selected Stock
-stock_df = stock_data[stock_data['symbol'] == selected_stock]
+stock_df = stock_data[stock_data['name'] == selected_stock]
 
 # Section A: Storage Benchmarking
 st.subheader("📊 Storage Format Benchmarking")
