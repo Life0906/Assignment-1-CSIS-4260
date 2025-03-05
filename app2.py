@@ -28,6 +28,7 @@ tab1, tab2, tab3 = st.tabs(["1x Scale", "10x Scale", "100x Scale"])
 
 with tab1:
     st.dataframe(benchmark_1x)
+    st.write("Predictions from XGBoost & Random Forest models will be shown here.")
 with tab2:
     st.dataframe(benchmark_10x)
 with tab3:
