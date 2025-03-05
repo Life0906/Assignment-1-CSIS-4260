@@ -8,7 +8,7 @@ from sklearn.ensemble import RandomForestRegressor
 
 # Load dataset
 def load_data():
-    df = pd.read_parquet("scaled_dataset_1x_snappy.parquet")
+    df = pd.read_parquet("data.parquet")
     df['date'] = pd.to_datetime(df['date'])
     return df
 
