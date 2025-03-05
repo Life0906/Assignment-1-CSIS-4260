@@ -1,75 +1,55 @@
 import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
-import os
-import time
-from sklearn.ensemble import RandomForestRegressor
-import xgboost as xgb
+import plotly.express as px
 
-# Load dataset
-@st.cache_data
-def load_data():
-    return pd.read_parquet("data.parquet")
+# Load precomputed benchmarking results
+benchmark_1x = pd.read_csv("benchmark_results.csv")
+benchmark_10x = pd.read_csv("benchmark_results_10x.csv")
+benchmark_100x = pd.read_csv("benchmark_results_100x.csv")
 
-df = load_data()
+# Load stock data
+stock_data = pd.read_parquet("scaled_dataset_1x_snappy.parquet")
 
-# Benchmarking function
-def benchmark_format(df, format_name, compression=None):
-    file_name = f"benchmark_data.{format_name}"
-    start_time = time.time()
-    if format_name == "csv":
-        df.to_csv(file_name, index=False)
-    elif format_name == "parquet":
-        df.to_parquet(file_name, index=False, compression=compression)
-    write_time = time.time() - start_time
-    file_size = os.path.getsize(file_name) / (1024 * 1024)
-    start_time = time.time()
-    if format_name == "csv":
-        _ = pd.read_csv(file_name)
-    elif format_name == "parquet":
-        _ = pd.read_parquet(file_name)
-    read_time = time.time() - start_time
-    return write_time, read_time, file_size
+# Streamlit App
+st.set_page_config(page_title="Stock Dashboard", layout="wide")
+st.title("Stock Market Dashboard")
 
-# Benchmark Results
-formats = [("csv", None), ("parquet", None), ("parquet", "snappy"), ("parquet", "gzip"), ("parquet", "brotli")]
-def run_benchmarks(df_scaled):
-    results = {"Format": [], "Compression": [], "Write Time (s)": [], "Read Time (s)": [], "File Size (MB)": []}
-    for fmt, comp in formats:
-        write_time, read_time, file_size = benchmark_format(df_scaled, fmt, comp)
-        results["Format"].append(fmt)
-        results["Compression"].append(comp if comp else "None")
-        results["Write Time (s)"].append(write_time)
-        results["Read Time (s)"].append(read_time)
-        results["File Size (MB)"].append(file_size)
-    return pd.DataFrame(results)
+# Sidebar for Stock Selection
+st.sidebar.header("Stock Selection")
+selected_stock = st.sidebar.selectbox("Choose a stock:", stock_data['symbol'].unique())
 
-scales = {"1x": df, "10x": pd.concat([df] * 10, ignore_index=True), "100x": pd.concat([df] * 100, ignore_index=True)}
+# Filter Data for Selected Stock
+stock_df = stock_data[stock_data['symbol'] == selected_stock]
 
-# Sidebar
-st.sidebar.title("Dashboard Options")
-section = st.sidebar.radio("Choose Section", ["Storage Benchmarking", "Stock Market & Predictions"])
+# Section A: Storage Benchmarking
+st.subheader("📊 Storage Format Benchmarking")
+tab1, tab2, tab3 = st.tabs(["1x Scale", "10x Scale", "100x Scale"])
 
-if section == "Storage Benchmarking":
-    st.title("Data Storage Benchmarking")
-    scale_choice = st.selectbox("Select Scale", list(scales.keys()))
-    st.dataframe(run_benchmarks(scales[scale_choice]))
+with tab1:
+    st.dataframe(benchmark_1x)
+with tab2:
+    st.dataframe(benchmark_10x)
+with tab3:
+    st.dataframe(benchmark_100x)
 
+# Section B: Stock Market Analysis
+st.subheader("📈 Stock Price Analysis")
+chart_type = st.radio("Choose chart type:", ["Line Chart", "Candlestick Chart"], horizontal=True)
+
+fig = go.Figure()
+if chart_type == "Line Chart":
+    fig = px.line(stock_df, x="date", y="close", title=f"{selected_stock} Closing Prices")
 else:
-    st.title("Stock Market Dashboard")
-    stock_options = df['Name'].unique()
-    selected_stock = st.selectbox("Choose a stock", stock_options)
-    chart_type = st.radio("Chart Type", ["Line Chart", "Candlestick Chart"])
-    stock_data = df[df['Name'] == selected_stock]
+    fig.add_trace(go.Candlestick(x=stock_df['date'],
+                                 open=stock_df['open'],
+                                 high=stock_df['high'],
+                                 low=stock_df['low'],
+                                 close=stock_df['close'],
+                                 name='Candlestick'))
+fig.update_layout(xaxis_rangeslider_visible=False)
+st.plotly_chart(fig, use_container_width=True)
 
-    fig = go.Figure()
-    if chart_type == "Line Chart":
-        fig.add_trace(go.Scatter(x=stock_data['date'], y=stock_data['close'], mode='lines', name='Closing Price'))
-    else:
-        fig.add_trace(go.Candlestick(x=stock_data['date'], open=stock_data['open'], high=stock_data['high'], low=stock_data['low'], close=stock_data['close'], name='Candlestick'))
-    
-    st.plotly_chart(fig)
-    
-    # Placeholder for predictions (XGBoost & Random Forest)
-    st.subheader("Predictions (XGBoost & Random Forest)")
-    st.write("Coming Soon...")
+# Section C: Predictions (XGBoost & Random Forest)
+st.subheader("🤖 Stock Price Predictions")
+st.write("Predictions from XGBoost & Random Forest models will be shown here.")
