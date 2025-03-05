@@ -54,15 +54,12 @@ st.line_chart(df_selected[['MACD', 'Signal_Line']])
 @st.cache
 def load_models():
     xgb_model = joblib.load("xgb_model.pkl")
-    rf_model = joblib.load("rf_model.pkl")
-    return xgb_model, rf_model
+    return xgb_model
 
-xgb_model, rf_model = load_models()
+xgb_model = load_models()
 latest_features = df_selected[['open', 'high', 'low', 'close', 'volume']].iloc[-1:].values
 
 xgb_pred = xgb_model.predict(latest_features)
-rf_pred = rf_model.predict(latest_features)
 
 st.subheader("Stock Price Predictions")
 st.write(f"**XGBoost Prediction:** {xgb_pred[0]:.2f}")
-st.write(f"**Random Forest Prediction:** {rf_pred[0]:.2f}")
