@@ -57,6 +57,10 @@ def load_models():
 
 xgb_model = load_models()
 latest_features = df_selected[['open', 'high', 'low', 'close', 'volume']].iloc[-1:].values
+import numpy as np
+
+# Ensure the features match the training shape
+latest_features = np.array(latest_features).reshape(1, -1)
 
 xgb_pred = xgb_model.predict(latest_features)
 
