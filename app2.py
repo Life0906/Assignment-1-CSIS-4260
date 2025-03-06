@@ -34,8 +34,16 @@ with tab1:
     st.write("Good compression (~65% smaller than CSV).")
 with tab2:
     st.dataframe(benchmark_10x)
+    st.write("Recommendation for 10x Scale: Parquet + Snappy")
+    st.write("Good balance between compression and speed.")
+    st.write("60% smaller file than CSV.")
+    st.write("Second fastest read time, only slightly slower than Parquet + Gzip but a perfect combination of all three metrics.")
 with tab3:
     st.dataframe(benchmark_100x)
+    st.write("Recommendation for 100x Scale: Parquet + Gzip")
+    st.write("Best tradeoff between compression and read speed.")
+    st.write("75% smaller than CSV (758MB vs. 2.88GB).")
+    st.write("Read time is 6× faster than CSV.")
 
 # Section B: Stock Market Analysis
 st.subheader("📈 Stock Price Analysis")
