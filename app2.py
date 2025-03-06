@@ -28,13 +28,10 @@ tab1, tab2, tab3 = st.tabs(["1x Scale", "10x Scale", "100x Scale"])
 
 with tab1:
     st.dataframe(benchmark_1x)
-    st.write("Recommendation for 1x Scale: Parquet + Snappy
-
-Fastest read speed (0.067 sec).
-
-Reasonable write speed (0.23 sec, 5× faster than CSV).
-
-Good compression (~65% smaller than CSV).")
+    st.write("Recommendation for 1x Scale: Parquet + Snappy")
+    st.write("Fastest read speed (0.067 sec).")
+    st.write("Reasonable write speed (0.23 sec, 5× faster than CSV).")
+    st.write("Good compression (~65% smaller than CSV).")
 with tab2:
     st.dataframe(benchmark_10x)
 with tab3:
