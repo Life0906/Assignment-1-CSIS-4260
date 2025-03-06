@@ -29,6 +29,29 @@ df_selected['RSI'] = 100 - (100 / (1 + df_selected['close'].pct_change().rolling
 df_selected['MACD'] = df_selected['close'].ewm(span=12, adjust=False).mean() - df_selected['close'].ewm(span=26, adjust=False).mean()
 df_selected['Signal_Line'] = df_selected['MACD'].ewm(span=9, adjust=False).mean()
 
+# Section A: Storage Benchmarking
+st.subheader("📊 Storage Format Benchmarking")
+tab1, tab2, tab3 = st.tabs(["1x Scale", "10x Scale", "100x Scale"])
+
+with tab1:
+    st.dataframe(benchmark_1x)
+    st.write("Recommendation for 1x Scale: Parquet + Snappy")
+    st.write("Fastest read speed (0.067 sec).")
+    st.write("Reasonable write speed (0.23 sec, 5× faster than CSV).")
+    st.write("Good compression (~65% smaller than CSV).")
+with tab2:
+    st.dataframe(benchmark_10x)
+    st.write("Recommendation for 10x Scale: Parquet + Snappy")
+    st.write("Good balance between compression and speed.")
+    st.write("60% smaller file than CSV.")
+    st.write("Second fastest read time, only slightly slower than Parquet + Gzip but a perfect combination of all three metrics.")
+with tab3:
+    st.dataframe(benchmark_100x)
+    st.write("Recommendation for 100x Scale: Parquet + Gzip")
+    st.write("Best tradeoff between compression and read speed.")
+    st.write("75% smaller than CSV (758MB vs. 2.88GB).")
+    st.write("Read time is 6× faster than CSV.")
+
 # Plot Charts
 st.title(f"Stock Analysis Dashboard for {selected_company}")
 if chart_type == "Line Chart":
