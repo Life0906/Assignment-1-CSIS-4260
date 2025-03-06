@@ -64,4 +64,22 @@ st.plotly_chart(fig, use_container_width=True)
 
 # Section C: Predictions (XGBoost & Random Forest)
 st.subheader("🤖 Stock Price Predictions")
-st.write("Predictions from XGBoost & Random Forest models will be shown here.")
+@st.cache
+def load_models():
+    xgb_model = joblib.load("xgb_model.pkl")
+    return xgb_model
+
+xgb_model = load_models()
+latest_features = df_selected[['50_MA', '200_MA', 'RSI', 'MACD']].iloc[-1:].values
+import numpy as np
+
+# Ensure the features match the training shape
+latest_features = np.array(latest_features).reshape(1, -1)
+
+xgb_pred = xgb_model.predict(latest_features)
+
+print(f"Expected Features: {xgb_model.n_features_in_}")
+print(f"Provided Features: {latest_features.shape[1]}")
+
+st.subheader("Stock Price Predictions")
+st.write(f"**XGBoost Prediction:** {xgb_pred[0]:.2f}")
