@@ -6,6 +6,11 @@ import xgboost as xgb
 import joblib
 from sklearn.ensemble import RandomForestRegressor
 
+# Load precomputed benchmarking results
+benchmark_1x = pd.read_csv("benchmark_results.csv")
+benchmark_10x = pd.read_csv("benchmark_results_10x.csv")
+benchmark_100x = pd.read_csv("benchmark_results_100x.csv")
+
 # Load dataset
 def load_data():
     df = pd.read_parquet("data.parquet")
