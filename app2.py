@@ -72,7 +72,7 @@ def load_models():
     return xgb_model
 
 xgb_model = load_models()
-latest_features = df_selected[['50_MA', '200_MA', 'RSI', 'MACD']].iloc[-1:].values
+latest_features = selected_stock[['50_MA', '200_MA', 'RSI', 'MACD']].iloc[-1:].values
 import numpy as np
 
 # Ensure the features match the training shape
